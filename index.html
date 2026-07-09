@@ -1123,20 +1123,23 @@ function showResult() {
       traitsEl.appendChild(chip);
     });
 
-    // 渲染五大维度占比条（双边对比，占比多者高亮）
+    // 渲染五大维度占比条（双边对比，占比多者高亮，100%时全彩）
     const dimsEl = document.getElementById('dims-section');
     const scores = getDimensionScores();
     const barColors = ['bar-ei', 'bar-sn', 'bar-tf', 'bar-jp', 'bar-ax'];
     dimsEl.innerHTML = '<div class="dims-title">— 五大维度分析 —</div>';
     scores.forEach((s, i) => {
       const leftDom = s.leftPct >= s.rightPct;
+      // 条始终显示占优方的比例，始终用彩色
+      const barPct = leftDom ? s.leftPct : s.rightPct;
+      const barAlign = leftDom ? 'left' : 'right';
       const row = document.createElement('div');
       row.className = 'dim-row';
       row.innerHTML = `
         <div class="dim-label-l" style="color:${leftDom ? 'var(--ink)' : 'var(--ink-soft)'};font-weight:${leftDom ? '700' : '400'};">${s.leftLabel}</div>
         <div class="dim-pct-l" style="color:${leftDom ? 'var(--ink)' : 'var(--ink-soft)'};font-weight:${leftDom ? '700' : '400'};">${s.leftPct}%</div>
         <div class="dim-bar-wrap">
-          <div class="dim-bar-fill ${barColors[i]}" style="width:${s.leftPct}%;${leftDom ? '' : 'background:var(--paper-line);'}"></div>
+          <div class="dim-bar-fill ${barColors[i]}" style="width:${barPct}%;margin-left:${barAlign === 'right' ? 'auto' : '0'};margin-right:${barAlign === 'left' ? 'auto' : '0'};"></div>
         </div>
         <div class="dim-pct-r" style="color:${!leftDom ? 'var(--ink)' : 'var(--ink-soft)'};font-weight:${!leftDom ? '700' : '400'};">${s.rightPct}%</div>
         <div class="dim-label-r" style="color:${!leftDom ? 'var(--ink)' : 'var(--ink-soft)'};font-weight:${!leftDom ? '700' : '400'};">${s.rightLabel}</div>
