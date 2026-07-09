@@ -579,7 +579,7 @@
   <!-- 访问计数器 - 所有页面底部可见 -->
   <div style="text-align:center;margin-top:20px;padding:12px;">
     <span style="font-size:13px;color:var(--ink-soft);">
-      👁️ 本站已被访问 <b style="color:var(--ink);" id="visitor-count">...</b> 次
+      👁️ 访问次数：<img src="https://hits.sh/finals-ti-test.svg?style=flat&label=" alt="visits" style="height:18px;vertical-align:middle;border:0;" />
     </span>
   </div>
 
@@ -1201,17 +1201,6 @@ function renderGallery() {
     grid.appendChild(cell);
   });
 }
-</script>
-<script>
-// 访问计数器
-(function() {
-  var COUNTER_API = 'https://api.countapi.xyz/hit/finals-ti-test/visits';
-  var el = document.getElementById('visitor-count');
-  fetch(COUNTER_API)
-    .then(function(r) { return r.json(); })
-    .then(function(d) { el.textContent = d.value; })
-    .catch(function() { el.textContent = 'N'; });
-})();
 </script>
 </body>
 </html>
