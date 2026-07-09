@@ -574,10 +574,13 @@
       <div class="gallery-grid" id="gallery-grid"></div>
     </div>
     <p class="footer-note">截图发朋友圈，看看谁才是真正的期末战神 📸 仅供娱乐，切勿当真~</p>
-    <p style="text-align:center;font-size:11px;color:var(--ink-soft);margin-top:8px;">
-      👁️ <span id="busuanzi_value_page_pv">-</span> 次浏览 ·
-      👥 <span id="busuanzi_value_site_uv">-</span> 人访问
-    </p>
+  </div>
+
+  <!-- 访问计数器 - 所有页面底部可见 -->
+  <div style="text-align:center;margin-top:20px;padding:12px;">
+    <span style="font-size:13px;color:var(--ink-soft);">
+      👁️ 本站已被访问 <b style="color:var(--ink);" id="visitor-count">...</b> 次
+    </span>
   </div>
 
 </div>
@@ -1199,7 +1202,17 @@ function renderGallery() {
   });
 }
 </script>
-<script async src="https://busuanzi.9420.ltd/js/busuanzi.pure.mini.js"></script>
+<script>
+// 访问计数器
+(function() {
+  var COUNTER_API = 'https://api.countapi.xyz/hit/finals-ti-test/visits';
+  var el = document.getElementById('visitor-count');
+  fetch(COUNTER_API)
+    .then(function(r) { return r.json(); })
+    .then(function(d) { el.textContent = d.value; })
+    .catch(function() { el.textContent = 'N'; });
+})();
+</script>
 </body>
 </html>
  
