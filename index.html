@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FINALS-TI · 期末周人格鉴定局 | 你是哪种崩溃姿势？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EAEEF3;
+    --paper-line: #D3DBE4;
+    --ink: #1F2A3C;
+    --ink-soft: #4B5A70;
+    --yellow: #FFE066;
+    --pink: #FF6F91;
+    --green: #06D6A0;
+    --coral: #FF6B4A;
+    --blue: #5AC8FA;
+    --purple: #C29CF0;
+    --card: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--paper);
+    background-image:
+      repeating-linear-gradient(0deg, var(--paper-line) 0px, var(--paper-line) 1px, transparent 1px, transparent 32px),
+      repeating-linear-gradient(90deg, var(--paper-line) 0px, var(--paper-line) 1px, transparent 1px, transparent 32px);
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--ink);
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px 64px;
+  }
+
+  .stage {
+    width: 100%;
+    max-width: 560px;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 8px; height: 8px;
+    background: var(--coral);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  h1.title {
+    font-family: 'Kalam', cursive;
+    font-size: 44px;
+    line-height: 1.05;
+    margin: 4px 0 8px;
+    position: relative;
+    display: inline-block;
+  }
+  h1.title .hl {
+    background: linear-gradient(120deg, var(--yellow) 0%, var(--yellow) 100%);
+    background-repeat: no-repeat;
+    background-size: 100% 40%;
+    background-position: 0 88%;
+    padding: 0 2px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  /* Checklist progress */
+  .checklist {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .check-item {
+    width: 22px; height: 22px;
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    background: var(--card);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .check-item.done {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .check-item.done::after {
+    content: "✓";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .check-item.current {
+    border-color: var(--coral);
+    box-shadow: 0 0 0 3px rgba(255,107,74,0.15);
+  }
+
+  /* Card */
+  .card {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 16px;
+    padding: 28px 24px;
+    box-shadow: 6px 6px 0 var(--ink);
+    margin-bottom: 20px;
+  }
+
+  .q-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--coral);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 22px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 12px; }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    gap: 12px;
+  }
+  .back-btn {
+    background: var(--card);
+    color: var(--ink-soft);
+    border: 2px solid var(--ink-soft);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    visibility: hidden;
+  }
+  .back-btn.visible { visibility: visible; }
+  .back-btn:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: var(--paper);
+  }
+  .progress-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .option-btn {
+    text-align: left;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: var(--ink);
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .option-btn:hover {
+    background: var(--yellow);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+  .option-btn:active {
+    transform: translate(0, 0);
+    box-shadow: 1px 1px 0 var(--ink);
+  }
+
+  .start-btn, .restart-btn {
+    background: var(--coral);
+    color: white;
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    padding: 16px 28px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .start-btn:hover, .restart-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .start-btn:active, .restart-btn:active {
+    transform: translate(0,0);
+    box-shadow: 1px 1px 0 var(--ink);
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* Result */
+  .result-card {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 20px;
+    padding: 36px 28px 28px;
+    box-shadow: 8px 8px 0 var(--ink);
+    position: relative;
+    overflow: visible;
+  }
+  /* Sticker avatar */
+  .avatar-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 8px;
+  }
+  .sticker {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 58px;
+    position: relative;
+    box-shadow: 5px 5px 0 var(--ink);
+    transform: rotate(var(--tilt, -4deg));
+    flex-shrink: 0;
+  }
+  .sticker .badge2 {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 36px;
+    height: 36px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transform: rotate(calc(-1 * var(--tilt, -4deg)));
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  .gallery-toggle {
+    display: block;
+    width: 100%;
+    background: var(--card);
+    border: 2px dashed var(--ink-soft);
+    border-radius: 12px;
+    padding: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    margin-top: 4px;
+    text-align: center;
+  }
+  .gallery-toggle:hover { border-color: var(--ink); color: var(--ink); }
+
+  .gallery-grid {
+    display: none;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 12px;
+    max-height: 520px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .gallery-grid.open { display: grid; }
+  .gallery-cell {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    padding: 7px 4px 6px;
+    text-align: center;
+    cursor: default;
+  }
+  .gallery-cell.current { background: var(--yellow); }
+  .gallery-sticker {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin: 0 auto 4px;
+  }
+  .gallery-cell .g-name {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .gallery-cell .g-code {
+    font-size: 9px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-soft);
+  }
+
+  /* 结果页：人格图片 */
+  .persona-img-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .persona-img {
+    width: 240px;
+    height: 240px;
+    border-radius: 24px;
+    border: 4px solid var(--ink);
+    box-shadow: 8px 8px 0 var(--ink);
+    object-fit: cover;
+    background: var(--paper);
+  }
+  /* 五大维度条 */
+  .dims-section {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 2px dashed var(--paper-line);
+  }
+  .dims-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 18px;
+    text-align: center;
+    letter-spacing: 0.08em;
+  }
+  .dim-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 13px;
+  }
+  .dim-label-l, .dim-label-r {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    width: 68px;
+    flex-shrink: 0;
+    line-height: 1.3;
+  }
+  .dim-label-l { text-align: right; }
+  .dim-label-r { text-align: left; }
+  .dim-pct-l, .dim-pct-r {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    width: 34px;
+    flex-shrink: 0;
+  }
+  .dim-pct-l { text-align: right; }
+  .dim-pct-r { text-align: left; }
+  .dim-bar-wrap {
+    flex: 1;
+    height: 22px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 11px;
+    overflow: hidden;
+    position: relative;
+  }
+  .dim-bar-fill {
+    height: 100%;
+    border-radius: 9px;
+    transition: width 0.6s ease;
+    min-width: 0;
+  }
+  /* 颜色映射 */
+  .bar-ei { background: var(--coral); }
+  .bar-sn { background: var(--blue); }
+  .bar-tf { background: var(--green); }
+  .bar-jp { background: var(--yellow); }
+  .bar-ax { background: var(--purple); }
+  /* 图库使用图片 */
+  .gallery-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--ink);
+    object-fit: cover;
+    margin: 0 auto 5px;
+    display: block;
+    background: var(--paper);
+  }
+
+  .result-tape {
+    position: absolute;
+    top: -10px; right: 24px;
+    background: var(--pink);
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 14px 8px;
+    border-radius: 0 0 6px 6px;
+    letter-spacing: 0.06em;
+  }
+  .result-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: 0.14em;
+  }
+  .result-name {
+    font-family: 'Kalam', cursive;
+    font-size: 44px;
+    margin: 8px 0 6px;
+    line-height: 1.1;
+  }
+  .result-mbti {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 800;
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    border-radius: 20px;
+    padding: 6px 18px;
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+  }
+  .result-desc {
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 18px;
+  }
+  .quote-block {
+    background: var(--paper);
+    border-left: 4px solid var(--green);
+    padding: 14px 18px;
+    font-size: 15px;
+    font-style: normal;
+    color: var(--ink-soft);
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  .quote-block b { color: var(--ink); }
+
+  .traits-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .trait-chip {
+    font-size: 12.5px;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--ink);
+    color: white;
+    padding: 5px 11px;
+    border-radius: 20px;
+  }
+
+  .footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 24px;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 480px) {
+    h1.title { font-size: 34px; }
+    .result-name { font-size: 30px; }
+    .card, .result-card { padding: 22px 16px; }
+    .sticker { width: 100px; height: 100px; font-size: 48px; }
+    .sticker .badge2 { width: 30px; height: 30px; font-size: 15px; bottom: -4px; right: -4px; }
+    .persona-img { width: 180px; height: 180px; }
+    .dim-label-l, .dim-label-r { width: 50px; font-size: 10px; }
+    .dim-pct-l, .dim-pct-r { width: 28px; font-size: 9px; }
+    .dim-bar-wrap { height: 16px; }
+    .dim-row { gap: 3px; }
+    .gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; max-height: 400px; }
+    .gallery-img { width: 40px; height: 40px; }
+    .gallery-sticker { width: 34px; height: 34px; font-size: 17px; }
+    .gallery-cell { padding: 5px 2px 5px; }
+    .gallery-cell .g-name { font-size: 9px; }
+    .gallery-cell .g-code { font-size: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- INTRO -->
+  <div class="screen active" id="screen-intro">
+    <div class="eyebrow">FINALS-TI · 期末周全人格测试</div>
+    <h1 class="title">你是哪种<span class="hl">期末周生物</span>？</h1>
+    <p class="subtitle">20道灵魂拷问 × 每题4级强度选项，从社交模式、规划哲学、情绪系统、执行引擎、信仰体系五大维度精准扫描你的期末人格。答完解锁专属搞怪称号。</p>
+    <div class="card">
+      <p style="margin:0 0 20px; font-size:15px; color:var(--ink-soft); line-height:1.7;">
+        没有标准答案，选你考试周<b style="color:var(--ink);">最真实</b>的反应就行——哪怕答案很社死。<br>
+        <span style="font-size:13px;">● 实心圆 = 这绝对是我　○ 空心圆 = 我偏向这样　🔥 = 典中典</span>
+      </p>
+      <button class="start-btn" onclick="startQuiz()">开始测试 →</button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="screen-quiz">
+    <div class="eyebrow">FINALS-TI</div>
+    <div class="checklist" id="checklist"></div>
+    <div class="card">
+      <div class="q-number" id="q-number">Q1 / 20</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="q-options"></div>
+      <div class="nav-row">
+        <button class="back-btn" id="back-btn" onclick="goBack()">← 上一题</button>
+        <span class="progress-text" id="progress-text"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="screen-result">
+    <div class="eyebrow">你的期末人格鉴定结果</div>
+    <div class="result-card">
+      <div class="result-tape">FINALS-TI 鉴定报告</div>
+      <!-- 人格图片 -->
+      <div class="persona-img-wrap">
+        <img class="persona-img" id="res-img" src="" alt="人格图片" />
+        <div class="sticker" id="res-img-fallback" style="display:none;margin:0 auto;--tilt:-3deg;"></div>
+      </div>
+      <!-- 文字信息 -->
+      <div class="result-code" id="res-code" style="text-align:center;"></div>
+      <div class="result-name" id="res-name" style="text-align:center;"></div>
+      <div class="result-mbti" id="res-mbti" style="display:block; width:fit-content; margin:0 auto 18px;"></div>
+      <div class="result-desc" id="res-desc"></div>
+      <div class="quote-block" id="res-quote"></div>
+      <div class="traits-row" id="res-traits"></div>
+      <!-- 五大维度占比条 -->
+      <div class="dims-section" id="dims-section"></div>
+      <button class="restart-btn" onclick="restartQuiz()">再测一次 ↻</button>
+      <button class="gallery-toggle" onclick="toggleGallery()" id="gallery-btn">👀 查看全部32种期末人格图鉴</button>
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </div>
+    <p class="footer-note">截图发朋友圈，看看谁才是真正的期末战神 📸 仅供娱乐，切勿当真~</p>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  // ═══ EI轴：外向抱团 vs 内向独狼 ═══ 4题
+  {
+    axis: 'EI',
+    text: '复习到一半，手机响了——团支书打来视频通话。你：',
+    options: [
+      { label: '秒接！正好学累了想找人说说话，聊了半小时', value: 'E', weight: 2 },
+      { label: '接了，聊几分钟放松一下，然后继续学', value: 'E', weight: 1 },
+      { label: '假装没看到，挂断后发消息"刚才在学不好意思啊"', value: 'I', weight: 1 },
+      { label: '秒静音+翻转屏幕朝下——复习期间所有来电都是敌人', value: 'I', weight: 2 }
+    ]
+  },
+  {
+    axis: 'EI',
+    text: '班群有人发起"期末复习每日打卡接龙"，你：',
+    options: [
+      { label: '立刻接龙！每天坚持打卡，还会主动@没打的人："就差你了！"', value: 'E', weight: 2 },
+      { label: '接了，偶尔打卡，"看看别人进度还挺有动力的"', value: 'E', weight: 1 },
+      { label: '默默围观不参与，但会偷偷看别人打卡内容参考进度', value: 'I', weight: 1 },
+      { label: '设置群消息免打扰——"打卡接龙是效率最低的自我感动行为"', value: 'I', weight: 2 }
+    ]
+  },
+  {
+    axis: 'EI',
+    text: '考完试大家在群里热烈讨论答案，你：',
+    options: [
+      { label: '立刻加入混战！逐题对答案，一个人对战全班："我选B！肯定B！"', value: 'E', weight: 2 },
+      { label: '围观一下讨论，偶尔插一句自己拿不准的题', value: 'E', weight: 1 },
+      { label: '瞥了两眼群消息，默默拿出书开始对答案但不发言', value: 'I', weight: 1 },
+      { label: '直接屏蔽群——"对答案是考后第一酷刑，求求你们别对了"', value: 'I', weight: 2 }
+    ]
+  },
+  {
+    axis: 'EI',
+    text: '你发现一个知识点三种教材讲法都不一样，你：',
+    options: [
+      { label: '截图发学习群引发一场大讨论——"兄弟们来评评理！"', value: 'E', weight: 2 },
+      { label: '私聊问几个同学他们老师怎么讲的，综合一下', value: 'E', weight: 1 },
+      { label: '自己查更多资料对比，综合出自己的理解版本', value: 'I', weight: 1 },
+      { label: '关掉所有教材——"既然你们说不清楚，那我按自己的来"', value: 'I', weight: 2 }
+    ]
+  },
+  // ═══ SN轴：计划控 vs 随性流 ═══ 4题
+  {
+    axis: 'SN',
+    text: '你要同时复习5门课，你的策略是？',
+    options: [
+      { label: '列出每门课知识点清单，按考试时间×学分权重排出优先级矩阵', value: 'S', weight: 2 },
+      { label: '按考试顺序一门门来，每门分配固定天数', value: 'S', weight: 1 },
+      { label: '今天想学哪门学哪门，主打一个"随心"和"缘分"', value: 'N', weight: 1 },
+      { label: '5门？？打开一门看了5分钟→换另一门→再换→每门都只看了第一章', value: 'N', weight: 2 }
+    ]
+  },
+  {
+    axis: 'SN',
+    text: '学校突然通知考试提前了一周，你：',
+    options: [
+      { label: '打开日历，立刻重新调整所有科目的复习计划——面不改色', value: 'S', weight: 2 },
+      { label: '有点慌但迅速列出这周必须完成的任务清单', value: 'S', weight: 1 },
+      { label: '"啊？？"焦虑地刷了半小时手机，然后才开始想怎么办', value: 'N', weight: 1 },
+      { label: '"提前就提前呗，反正我也没按原计划走"（其实原计划根本不存在）', value: 'N', weight: 2 }
+    ]
+  },
+  {
+    axis: 'SN',
+    text: '复习到一半你突然对桌上的一切产生了强烈的整理欲，你：',
+    options: [
+      { label: '"很好，整理也是复习的一部分"——按科目重新归档，理完继续学', value: 'S', weight: 2 },
+      { label: '花十分钟快速收拾干净——干净的环境有助于效率', value: 'S', weight: 1 },
+      { label: '整理了整整两小时桌子，然后觉得"今天做了很多了"就休息了', value: 'N', weight: 1 },
+      { label: '桌面→衣柜→手机相册→人生规划→天亮了，书还原封未动', value: 'N', weight: 2 }
+    ]
+  },
+  {
+    axis: 'SN',
+    text: '有人说"把课后题全部做一遍就能及格"，你：',
+    options: [
+      { label: '说做就做！当晚开始按章节刷题，做完一题划掉一题，一周刷完', value: 'S', weight: 2 },
+      { label: '纳入复习计划，尽量多做，但不会全部做完', value: 'S', weight: 1 },
+      { label: '象征性做了几道——"感觉差不多了，方法掌握了就行"', value: 'N', weight: 1 },
+      { label: '把这句话截图收藏到"复习锦囊"文件夹里（然后这个文件夹再也没打开过）', value: 'N', weight: 2 }
+    ]
+  },
+  // ═══ TF轴：理性机器 vs 感性生物 ═══ 4题
+  {
+    axis: 'TF',
+    text: '期末最后一道大题完全不会，答题卡空着一大片，你：',
+    options: [
+      { label: '冷静拆解题干条件，能写几步写几步，争取每步都有步骤分', value: 'T', weight: 2 },
+      { label: '努力回忆相关公式尽量往上靠，写了总比空着强', value: 'T', weight: 1 },
+      { label: '心里慌了但硬着头皮编了一段看起来很有道理的废话', value: 'F', weight: 1 },
+      { label: '在答题区画了个哭泣表情包，旁边写"老师求求了🙏您辛苦了"', value: 'F', weight: 2 }
+    ]
+  },
+  {
+    axis: 'TF',
+    text: '复习时你最喜欢的up主突然更新了，你：',
+    options: [
+      { label: '"等我完成今日计划再看"——加进稍后再看，眼皮都不抬一下', value: 'T', weight: 2 },
+      { label: '看了5分钟强行关掉——"不能耽误进度，考完再说"', value: 'T', weight: 1 },
+      { label: '"就看这一个……"结果顺着推荐连看了三个——"今天不在状态"', value: 'F', weight: 1 },
+      { label: '立刻点开！顺着推荐算法一路滑进深渊——"算了今天是休息日"', value: 'F', weight: 2 }
+    ]
+  },
+  {
+    axis: 'TF',
+    text: '考场上发现旁边的同学一直在偷瞄你的卷子，你：',
+    options: [
+      { label: '举手告诉监考老师——"这不针对谁，这是考场纪律的原则问题"', value: 'T', weight: 2 },
+      { label: '用草稿纸盖住卷面，继续做自己的题', value: 'T', weight: 1 },
+      { label: '有点不舒服但不好意思说什么，默默换个姿势挡住', value: 'F', weight: 1 },
+      { label: '悄悄把卷子往ta那边挪了挪——"都不容易，能帮一点是一点"', value: 'F', weight: 2 }
+    ]
+  },
+  {
+    axis: 'TF',
+    text: '期末成绩出了——你考了59分。你的第一反应？',
+    options: [
+      { label: '立刻申请查卷复核，列出一份详细的得分点质疑清单', value: 'T', weight: 2 },
+      { label: '算了一遍卷面分确认不是自己算错，准备联系老师问平时分', value: 'T', weight: 1 },
+      { label: '瘫坐在椅子上发呆五分钟——"我真的会谢……"', value: 'F', weight: 1 },
+      { label: '朋友圈+微博+小红书三平台同步崩溃——"59分是人能打出来的分数吗？？？"', value: 'F', weight: 2 }
+    ]
+  },
+  // ═══ JP轴：卷王引擎 vs 摆烂模式 ═══ 4题
+  {
+    axis: 'JP',
+    text: '周五晚上11点，周一早上8点考你最怕的那门课。你：',
+    options: [
+      { label: '已经按计划复习三周了，今晚最后过一遍真题，明天还能休息一天', value: 'J', weight: 2 },
+      { label: '复习得差不多了，这个周末冲刺一下问题不大', value: 'J', weight: 1 },
+      { label: '刚准备开始——"周末两天够了，48小时呢，绰绰有余"', value: 'P', weight: 1 },
+      { label: '"还有整整36小时！先睡一觉明早再说"（然后一觉睡到周六下午两点）', value: 'P', weight: 2 }
+    ]
+  },
+  {
+    axis: 'JP',
+    text: '你在图书馆已经待了3小时，这三小时里你实际：',
+    options: [
+      { label: '刷完一整章+课后习题+整理了错题本，效率爆表', value: 'J', weight: 2 },
+      { label: '认真学了大概两小时，中间休息了几次刷了会儿手机', value: 'J', weight: 1 },
+      { label: '学了约45分钟，其余时间：接水×5、上厕所×3、刷手机×N', value: 'P', weight: 1 },
+      { label: '摆好书→打开第一页→拿出手机——"就看一眼"→三小时后书还在同一页', value: 'P', weight: 2 }
+    ]
+  },
+  {
+    axis: 'JP',
+    text: '考前一天你发现自己复习错版本了（老师中途换了教材），你：',
+    options: [
+      { label: '深吸一口气，立刻对比新旧教材目录，锁定差异章节，精准打击', value: 'J', weight: 2 },
+      { label: '有点崩溃但迅速调整——集中火力看新内容，旧内容靠基础', value: 'J', weight: 1 },
+      { label: '"啊这……"呆滞片刻后开始疯狂找捷径、搜重点、问同学', value: 'P', weight: 1 },
+      { label: '"这就是命"——放下旧书，打开朋友圈开始转发锦鲤', value: 'P', weight: 2 }
+    ]
+  },
+  {
+    axis: 'JP',
+    text: '"明天开始复习"这句话你这个学期说过几次了？',
+    options: [
+      { label: '从没说过——我是从开学第一周就开始复习的那种人', value: 'J', weight: 2 },
+      { label: '说过几次但基本做到了——我对自己还是比较负责的', value: 'J', weight: 1 },
+      { label: '说过很多次但只兑现了大概一半——"这次是真的！"', value: 'P', weight: 1 },
+      { label: '这句话是我的口头禅，我从开学说到期末考试前一天', value: 'P', weight: 2 }
+    ]
+  },
+  // ═══ AX轴：科学实干派 vs 玄学祈福派 ═══ 4题
+  {
+    axis: 'AX',
+    text: '考试前一晚，除了复习你还会做什么？',
+    options: [
+      { label: '检查文具、默念知识框架、深呼吸调整状态——纯科学备考流', value: 'A', weight: 2 },
+      { label: '正常复习，相信自己的准备，保持平常心就好', value: 'A', weight: 1 },
+      { label: '转发一条锦鲤到朋友圈——"宁可信其有，不可信其无"', value: 'X', weight: 1 },
+      { label: '全套玄学仪式：拜考神+星座运势+幸运手链+塔罗牌占卜一条龙', value: 'X', weight: 2 }
+    ]
+  },
+  {
+    axis: 'AX',
+    text: '你觉得一场考试最终能不能过，主要取决于？',
+    options: [
+      { label: '平时的积累和科学的备考方法——付出和回报大体成正比', value: 'A', weight: 2 },
+      { label: '努力和方法占大头，但也需要临场状态和一点运气', value: 'A', weight: 1 },
+      { label: '运气真的很重要——碰到会的题就是缘分，不会的就是命', value: 'X', weight: 1 },
+      { label: '三分天注定七分靠玄学，剩下九十分全看老师改卷心情', value: 'X', weight: 2 }
+    ]
+  },
+  {
+    axis: 'AX',
+    text: '打开教务系统查成绩之前，你的心态是？',
+    options: [
+      { label: '已提前估好分，误差不超过5分，打开只是确认一下', value: 'A', weight: 2 },
+      { label: '大概知道能考多少，但点击查分按钮时还是有点小紧张', value: 'A', weight: 1 },
+      { label: '手心出汗心跳加速——刷新了十次页面就是不敢点"查询"', value: 'X', weight: 1 },
+      { label: '"此时此刻，我既挂了也没挂，直到打开系统那一刻才坍缩为确定态"', value: 'X', weight: 2 }
+    ]
+  },
+  {
+    axis: 'AX',
+    text: '考完觉得可能要挂了，你的补救措施是？',
+    options: [
+      { label: '立刻算分、查往年分数线、评估是否需要准备补考——Plan B就位', value: 'A', weight: 2 },
+      { label: '等成绩出来再说，不提前焦虑——"万一过了呢"', value: 'A', weight: 1 },
+      { label: '在群里问"老师一般会捞人吗？平时分还有抢救的可能吗？"', value: 'X', weight: 1 },
+      { label: '私聊老师写小作文+转发十条锦鲤+去寺庙烧香——三管齐下', value: 'X', weight: 2 }
+    ]
+  }
+];
+
+const personas = {
+  // ═══ A组：科学实干派（AX=A）16种 ═══
+  'ENTJ-A': { code:'CTRL', name:'掌控者', mbti:'ENTJ-A', emoji:'🎮', emoji2:'📋', color:'--blue',
+    desc:'你的人生有一张无形的Excel表，考试只是其中一个sheet。室友的复习进度、小组作业分工、甚至食堂今日菜谱，全在你的监控范围内。没人能逃出你的计划表。',
+    quote:'"大家把进度表填一下，@所有人，今晚23:00前交，格式不对的给我重填。"',
+    traits:['进度条成精','Excel重度用户','天生指挥官'] },
+  'ESTJ-A': { code:'KING', name:'卷王', mbti:'ESTJ-A', emoji:'👑', emoji2:'💪', color:'--yellow',
+    desc:'你从开学第一周就开始期末复习。别人教材还没翻开，你已经刷完三遍历年真题了。"卷"这个字本身就是从你这里来的。看到别人学习你就兴奋，看到别人休息你就来劲。',
+    quote:'"什么？？你还没开始复习？？我都第三轮了，你认真的吗？"',
+    traits:['卷心菜本菜','题海战术指挥官','见人学则喜'] },
+  'ESFJ-A': { code:'PPT', name:'小组战神', mbti:'ESFJ-A', emoji:'📊', emoji2:'🛡️', color:'--coral',
+    desc:'小组5个人，4个在摸鱼，只有你在认真做PPT、写报告、整合排版。你不是想当英雄，是队友实在太菜了，逼着你原地成神。"小组作业"本质上是"一个人的作业"。',
+    quote:'"没事我来做PPT吧，你负责讲就好。"（然后做了全部内容）',
+    traits:['PPT纺织工','一人扛全组','带飞型队友'] },
+  'ENFJ-A': { code:'BOSS', name:'领导者', mbti:'ENFJ-A', emoji:'🎯', emoji2:'📢', color:'--blue',
+    desc:'小组作业自动成为组长，复习群自动成为群主，连食堂排队都能自动指挥大家高效点餐。领导力刻在你的DNA里，不指挥一下浑身难受——而且大家确实都听你的。',
+    quote:'"听我安排：A做PPT，B整理资料，C负责后勤，周五前汇总给我。"',
+    traits:['天生领导者','组织力MAX','不指挥不舒服斯基'] },
+  'ESTP-A': { code:'DDL', name:'冲刺王', mbti:'ESTP-A', emoji:'⚡', emoji2:'⏰', color:'--coral',
+    desc:'平时岁月静好，考前三天原地觉醒。靠红牛+肾上腺素连续通宵，效率在最后72小时达到全年峰值。DDL不是压力，是你的燃料——不到最后一刻你根本启动不了。',
+    quote:'"来得及来得及，还有8小时开考，问题不大，我还能冲！！"',
+    traits:['死线就是生产力','爆发型选手','红牛战略合作伙伴'] },
+  'ESFP-A': { code:'FISH', name:'摸鱼大师', mbti:'ESFP-A', emoji:'🐟', emoji2:'🎣', color:'--green',
+    desc:'在图书馆坐了8小时，实际学习45分钟。剩余时间：刷手机2h+发呆1h+看窗外0.5h+在课本上画小人+去接水×12次。你主打一个"气氛组"。',
+    quote:'"今天去图书馆了！！"（没提学了多久，你别问）',
+    traits:['划水锦标赛冠军','专注力堪比金鱼','图书馆气氛组组长'] },
+  'ENFP-A': { code:'CRY', name:'崩溃怪', mbti:'ENFP-A', emoji:'😭', emoji2:'📢', color:'--pink',
+    desc:'每天在朋友圈全程直播崩溃进度，情绪波动比过山车还刺激。但你有一个神奇天赋：哭着哭着竟然也把书背完了。嘴上说"不行了"，手上从来没停过。',
+    quote:'"我真的不行了呜呜呜呜呜……"（说完翻到下一页继续背）',
+    traits:['情绪过山车驾驶员','朋友圈崩溃直播员','哭完继续学'] },
+  'ENTP-A': { code:'MEME', name:'玩梗王', mbti:'ENTP-A', emoji:'😂', emoji2:'🎭', color:'--yellow',
+    desc:'期末周的每一份痛苦在你这里都是绝佳的表情包素材。你考一科能做十个梗图，在崩溃和幽默之间反复横跳。考试可以挂，但梗必须先到位——朋友圈的快乐都靠你撑着。',
+    quote:'"用我的表情包复习，挂科也值了！（不是）"',
+    traits:['梗图生产线','用幽默对抗挂科','朋友圈段子手'] },
+  'INTJ-A': { code:'MOON', name:'熬夜人', mbti:'INTJ-A', emoji:'🌙', emoji2:'🦉', color:'--purple',
+    desc:'白天行尸走肉，深夜学习战神。大脑在午夜12:00之后才真正开机，越到凌晨效率越高。凌晨四点的校园、凌晨五点的日出——都是你的日常风景。',
+    quote:'"才两点？还早呢，再学会儿。反正睡觉也睡不着。"',
+    traits:['昼夜颠倒大师','深夜生产力爆表','月亮不睡我不睡'] },
+  'ISTJ-A': { code:'NPC', name:'透明人', mbti:'ISTJ-A', emoji:'🫥', emoji2:'👻', color:'--green',
+    desc:'班级群发言次数≈0，朋友圈全年空白，但所有考试资料你都有、所有作业都按时交了。不声不响、不争不抢，像游戏里默默站着的NPC——存在感为零，战斗力满格。',
+    quote:'"……"（这是你本学期全部公开发言记录）',
+    traits:['存在感≈空气','默默做完一切','比NPC还低调'] },
+  'ISFJ-A': { code:'DOG', name:'牛马', mbti:'ISFJ-A', emoji:'🐮', emoji2:'🔗', color:'--coral',
+    desc:'从早到晚连轴转：上课、复习、打工、帮室友带饭、替小组补文档。你是期末周真正的生产力引擎，默默扛下了所有。没人知道你有多累——因为你从来不说。',
+    quote:'"没事我来做吧。"（这是你说的最多的一句话，也是你最累的原因）',
+    traits:['任劳任怨本怨','终极工具人','当代大学生牛马代表'] },
+  'INFJ-A': { code:'LUCK', name:'锦鲤', mbti:'INFJ-A', emoji:'🍀', emoji2:'🙏', color:'--pink',
+    desc:'转发考试锦鲤、考前拜考神、考试必带幸运物——你坚信"玄学也是学"。复习策略核心不是背书，而是积攒好运值。神奇的是…你好像真的每次都能低空飘过。',
+    quote:'"转发这条锦鲤，期末必过！！"（然后真的飘过了，赶紧还愿）',
+    traits:['玄学复习法创始人','幸运值莫名其妙点满','朋友圈锦鲤大使'] },
+  'ISTP-A': { code:'BUG', name:'摆烂王', mbti:'ISTP-A', emoji:'🪲', emoji2:'🛌', color:'--purple',
+    desc:'打开书本→发现看不懂→算了我摆烂吧→打游戏→更焦虑→继续摆烂→…这是你的期末无限循环。但你摆烂时的心态稳得一批，仿佛挂科跟自己无关。',
+    quote:'"摆了摆了，大不了重修，重修不过大不了退学，退学大不了回家种地。"',
+    traits:['摆烂学终身教授','放弃速度堪比光速','乐观的悲观主义者'] },
+  'ISFP-A': { code:'POOR', name:'贫穷者', mbti:'ISFP-A', emoji:'💸', emoji2:'🪫', color:'--green',
+    desc:'打印费太贵、咖啡太贵、连挂科费都交不起。贫穷是你期末复习的最大原动力——毕竟重修是真的要交钱。经济基础决定上层建筑，也决定了你的学习态度。',
+    quote:'"不是不想学，打印店一张三毛太贵了…我还是看电子版吧"（然后打开手机开始刷）',
+    traits:['钱包比脸还干净','经费不足型自律','白嫖学习资源专家'] },
+  'INFP-A': { code:'DEAD', name:'装死者', mbti:'INFP-A', emoji:'💀', emoji2:'📵', color:'--purple',
+    desc:'考试周一到，社交即刻切换：已读不回、手机关机、朋友圈停更。不是真的死了，是"装死式复习"让你在精神层面消失了。全世界都找不到你——包括你自己。',
+    quote:'"啊？？什么时候考的？？我以为下周才考……"（其实你根本没看通知群）',
+    traits:['已读不回宗师','社交能量直接归零','人间蒸发术十级'] },
+  'INTP-A': { code:'AI', name:'AI依赖症', mbti:'INTP-A', emoji:'🤖', emoji2:'💬', color:'--blue',
+    desc:'遇到任何问题先问AI：论文让AI写框架、代码让AI改bug、连"中午吃什么"都要问AI给建议。大脑已成功外包给大模型，离开AI你感觉大脑一片空白。',
+    quote:'"等一下！！让我先问问AI这题怎么做，别急…"',
+    traits:['AI重度依赖晚期','人机合一探索者','外包型学习法创始人'] },
+  // ═══ X组：玄学祈福派（AX=X）16种 — 来自《期末周人类行为图鉴》 ═══
+  'ENTJ-X': { code:'RIDL', name:'谜语人', mbti:'ENTJ-X', emoji:'👤', emoji2:'❓', color:'--purple',
+    desc:'"考试范围？我上课讲过的所有内容都是范围。"你说话永远只说一半，复习重点全靠猜——但没办法，老师确实是这么说的，你只是如实传达。全班都来问你范围，你享受这种感觉。',
+    quote:'"我只能告诉你这么多，剩下的你自己悟。"',
+    traits:['说话永远留白','猜题准确率70%','深不可测'] },
+  'ESTJ-X': { code:'PRNT', name:'印刷厂', mbti:'ESTJ-X', emoji:'🖨️', emoji2:'📄', color:'--blue',
+    desc:'打印机是你最好的朋友。课件？打印。笔记？打印。往年卷？打印。在你眼里"打印出来=复习过了"，至于看不看是另一回事。打印店的老板已经认识你了。',
+    quote:'"等我先打印出来再说。"（打印机吐了300页，你看了3页）',
+    traits:['打印即复习','纸张消耗大户','打印机守护者'] },
+  'ESFJ-X': { code:'HMST', name:'仓鼠', mbti:'ESFJ-X', emoji:'🐹', emoji2:'📦', color:'--yellow',
+    desc:'你囤积了全学院的复习资料：课件、笔记、往年卷、录音、视频……网盘里什么都有，但从来不打开看。"存了=学了"，囤积本身就是一种安全感。',
+    quote:'"这个资料我有！等等让我找找……"（找了半小时，最后在某个文件夹深处找到了——但已经过期了）',
+    traits:['资料收藏家','囤积症晚期','存了=学了'] },
+  'ENFJ-X': { code:'CHAR', name:'慈善家', mbti:'ENFJ-X', emoji:'🙏', emoji2:'💚', color:'--green',
+    desc:'"老师应该不会为难我们吧？"你坚信人性本善、老师仁慈、考试不会太难。这种盲目的乐观让你在期末周依然面带微笑，并感染了周围一片焦虑的同学。',
+    quote:'"放心吧，老师说了不会考太难的，相信老师！"（结果考了超纲题）',
+    traits:['无条件信任老师','乐观主义战士','永远笑嘻嘻'] },
+  'ESTP-X': { code:'GAMB', name:'赌徒', mbti:'ESTP-X', emoji:'🎲', emoji2:'🎰', color:'--coral',
+    desc:'你根据历年真题的出题规律建立了一套复杂的概率模型。"连续三个C之后这题不可能是C"——你的选择题策略建立在统计学和迷之自信之上。',
+    quote:'"根据我的分析，这道题60%概率选B，30%选D，10%选AC，绝对不可能是A。"',
+    traits:['概率猜题大师','选择题策略家','赌徒式复习法'] },
+  'ESFP-X': { code:'TRVL', name:'旅行家', mbti:'ESFP-X', emoji:'✈️', emoji2:'🏝️', color:'--pink',
+    desc:'期末周你靠幻想续命：查机票价格、看旅游攻略、规划暑假路线。复习五分钟，幻想两小时——"考完我要去海边躺一周，谁也别拦我"。',
+    quote:'"等我考完，第一件事就是订机票！"（然后打开旅游APP开始搜攻略，忘了还在复习）',
+    traits:['靠幻想续命','旅游攻略收藏家','身在图书馆心在夏威夷'] },
+  'ENFP-X': { code:'MDME', name:'马冬梅', mbti:'ENFP-X', emoji:'🤔', emoji2:'❓', color:'--pink',
+    desc:'打开书：马冬梅。合上书：马什么梅？到了考场：孙红雷！你的记忆像个漏勺，知识进去就漏，但你有一种迷之自信，坚信"考场上一定能想起来的"。',
+    quote:'"这个我明明昨天刚背过……叫什么来着……就在嘴边……算了先做下一题"',
+    traits:['记忆七秒','金鱼型学习','迷之自信'] },
+  'ENTP-X': { code:'UNDC', name:'伪装者', mbti:'ENTP-X', emoji:'🥸', emoji2:'🎭', color:'--coral',
+    desc:'考前你伪装成什么都不会的学渣："完蛋了我一点都没看"。满脸写着"我要挂了"。考后全班才发现你成绩比谁都好。深藏不露是你的生存策略——演技派影帝。',
+    quote:'"我真的没复习……"（打开成绩单：全班前三，绩点3.9）',
+    traits:['伪装学渣','深藏不露','考后震惊全班'] },
+  'INTJ-X': { code:'PHIL', name:'哲学家', mbti:'INTJ-X', emoji:'🤔', emoji2:'💭', color:'--purple',
+    desc:'复习时不断追问终极问题：这一切到底有什么意义？我为什么要学这个？出题人到底想考察什么？思考量远超行动量，但一旦想通，效率奇高。',
+    quote:'"从存在主义的角度来看，59分和60分真的有本质区别吗？"',
+    traits:['每天思考人生','复习五分钟哲学两小时','存在主义编外弟子'] },
+  'ISTJ-X': { code:'AGNT', name:'情报特工', mbti:'ISTJ-X', emoji:'🕵️', emoji2:'📡', color:'--green',
+    desc:'你是宿舍的信息枢纽，整合来自各班、各老师、各渠道的复习情报。谁也不知道你的消息从哪来的——但每次都准得吓人。隔壁班老师画的重点你比隔壁班同学还先知道。',
+    quote:'"可靠消息：第五章不考，第二章必出大题。别问我是怎么知道的，信我就对了。"',
+    traits:['情报网络遍布全院','信息来源成谜','宿舍情报中心'] },
+  'ISFJ-X': { code:'MORT', name:'敛容师', mbti:'ISFJ-X', emoji:'✨', emoji2:'📝', color:'--blue',
+    desc:'答案可以不会，但卷面必须美观。字迹工整、排版端庄、字数管够——你相信"态度分"的存在，并且确实靠一手好字在无数场考试中拿到了意外之喜。',
+    quote:'"这道题我虽然不会，但我写了800字工工整整的废话，老师应该能感受到我的诚意。"',
+    traits:['卷面颜值天花板','态度分收割机','以字服人'] },
+  'INFJ-X': { code:'LAOL', name:'海底捞', mbti:'INFJ-X', emoji:'🛟', emoji2:'🙏', color:'--green',
+    desc:'出成绩后第一反应不是查分，而是在群里发"老师捞捞🙏"。你相信老师手里有一根隐形的钓竿，能从挂科的深海里把你捞上来。你甚至准备了不同版本的求捞小作文。',
+    quote:'"老师海底捞月一下吧🙏🙏我的平时分还有抢救的可能吗？捞捞孩子！"',
+    traits:['精通求捞话术','平时分谈判专家','海底捞月型选手'] },
+  'ISTP-X': { code:'CAMU', name:'加缪', mbti:'ISTP-X', emoji:'🚬', emoji2:'📖', color:'--purple',
+    desc:'面对考试像加缪面对荒诞：冷静、疏离、略带嘲讽。挂科又如何？重修又如何？人类在宇宙面前不过是一粒尘埃。但你还是会去考试——因为缺席扣分更多。',
+    quote:'"人生没有意义，考试也没有。但我还是会去考，毕竟报名费不能浪费。"',
+    traits:['荒诞主义信徒','冷漠但到场','哲学系编外人员'] },
+  'ISFP-X': { code:'POET', name:'流浪诗人', mbti:'ISFP-X', emoji:'🎒', emoji2:'🚶', color:'--green',
+    desc:'无法在同一地点复习超过一小时。图书馆→空教室→湖边→咖啡店→操场看台……辗转N个地点，最后可能在一个谁都找不到的角落看书。地点不重要，氛围到了就行。',
+    quote:'"这个地方没灵感了，换个地方试试。"（一天换了五个地方，学了不到两小时）',
+    traits:['复习地点收集者','永远在路上','环境氛围敏感型'] },
+  'INFP-X': { code:'SCHR', name:'薛定谔', mbti:'INFP-X', emoji:'📦', emoji2:'🐱', color:'--purple',
+    desc:'打开教务系统前，成绩既挂了也没挂——处于量子叠加态。你宁愿反复刷新朋友圈也不敢点开查分按钮。每次都要等别人先查完告诉你"系统不卡了"才敢行动。',
+    quote:'"我不敢查……你先查你的，告诉我你的成绩我再决定查不查。"',
+    traits:['查分恐惧症','量子力学实践者','等别人先查'] },
+  'INTP-X': { code:'CHEM', name:'化学家', mbti:'INTP-X', emoji:'⚗️', emoji2:'☕', color:'--blue',
+    desc:'你自创了各种通宵燃料配方：咖啡+红牛是基础款，绿茶+可乐是进阶版，还有独门秘方不便透露。"睡眠是弱者的借口"——你对咖啡因的耐受度已经达到了医学奇迹的水平。',
+    quote:'"我研发的这个配方可以让你清醒18小时！副作用？暂时还没发现……（心率130）"',
+    traits:['通宵燃料发明家','咖啡因耐受MAX','人体实验爱好者'] }
+};
+
+// 人格图片映射（文件名）
+const personaImages = {
+  CTRL: '掌控者 CTRL.png',   KING: '卷王 KING.png',     PPT: '小组战神 PPT.png',
+  BOSS: '领导者 BOSS.png',   DDL: '冲刺王 DDL.png',     FISH: '摸鱼大师 FISH.png',
+  CRY: '崩溃怪 CRY.png',     MEME: '奶茶品鉴师 MT-MASTER.png',
+  MOON: '熬夜人 MOON.png',   NPC: '透明人 NPC.png',     DOG: '病人家属 FAMILY.png',
+  LUCK: '锦鲤 LUCK.png',     BUG: '摆烂王BUG .png',     POOR: '海底捞 LAOLAO.png',
+  DEAD: '装死者 DEAD.png',   AI: 'ai依赖症 ai.png',
+  RIDL: '谜语人 RIDDLE.png', PRNT: '印刷厂 PRINTER.png', HMST: '仓鼠 HOARD.png',
+  CHAR: '慈善家 CHARITY.png', GAMB: '赌徒 GAMBLE.png',   TRVL: '旅行家 TRAVEL.png',
+  MDME: '记忆碎片 MEMORY.png', UNDC: '伪装者 UNDERCOVER.png', PHIL: '加缪 ABSURD.png',
+  AGNT: '情报特工 AGENT.png', MORT: '敛容师 NEAT.png',   LAOL: '海底捞 LAOLAO.png',
+  CAMU: '狙击手 SNIPER.png',  POET: '流浪诗人 WANDER.png', SCHR: '薛定谔 SCHRODINGER.png',
+  CHEM: '催眠大师 HYPNOSIS.png'
+};
+const IMG_DIR = 'final-test-picture/';
+
+// 计算五大维度得分（0-100%）
+function getDimensionScores() {
+  const axes = [
+    { key: 'EI',   left: 'E', right: 'I', label: '社交模式', leftLabel: '外向抱团', rightLabel: '内向独狼' },
+    { key: 'SN',   left: 'S', right: 'N', label: '规划哲学', leftLabel: '计划控',   rightLabel: '随性流' },
+    { key: 'TF',   left: 'T', right: 'F', label: '情绪系统', leftLabel: '理性机器', rightLabel: '感性生物' },
+    { key: 'JP',   left: 'J', right: 'P', label: '执行引擎', leftLabel: '卷王引擎', rightLabel: '摆烂模式' },
+    { key: 'AX',   left: 'A', right: 'X', label: '信仰体系', leftLabel: '科学实干', rightLabel: '玄学祈福' }
+  ];
+  return axes.map(ax => {
+    const list = answers[ax.key] || [];
+    const total = list.length;
+    if (total === 0) return { ...ax, leftPct: 50, rightPct: 50, dominant: ax.leftLabel, domPct: 50 };
+    const leftCount = list.filter(v => v === ax.left).length;
+    const rightCount = total - leftCount;
+    const leftPct = Math.round((leftCount / total) * 100);
+    const rightPct = 100 - leftPct;
+    const dominant = leftPct >= rightPct ? ax.leftLabel : ax.rightLabel;
+    const domPct = Math.max(leftPct, rightPct);
+    return { ...ax, leftPct, rightPct, dominant, domPct };
+  });
+}
+
+let currentQ = 0;
+let answers = {};
+let answerHistory = []; // {axis, value, weight} 用于回退
+
+function startQuiz() {
+  currentQ = 0;
+  answers = {};
+  answerHistory = [];
+  showScreen('screen-quiz');
+  renderChecklist();
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderChecklist() {
+  const el = document.getElementById('checklist');
+  el.innerHTML = '';
+  for (let i = 0; i < questions.length; i++) {
+    const div = document.createElement('div');
+    div.className = 'check-item';
+    if (i < currentQ) div.classList.add('done');
+    if (i === currentQ) div.classList.add('current');
+    el.appendChild(div);
+  }
+}
+
+function renderQuestion() {
+  if (currentQ >= questions.length) {
+    showResult();
+    return;
+  }
+  const q = questions[currentQ];
+  if (!q) {
+    console.error('Question not found at index', currentQ);
+    showResult();
+    return;
+  }
+  document.getElementById('q-number').textContent = `Q${currentQ + 1} / ${questions.length}`;
+  document.getElementById('q-text').textContent = q.text;
+  const optsEl = document.getElementById('q-options');
+  optsEl.innerHTML = '';
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    const intensityLabel = opt.weight === 2 ? ' 🔥' : '';
+    btn.innerHTML = `<span class="opt-intensity" style="font-size:11px;color:var(--ink-soft);margin-right:6px;">${opt.weight === 2 ? '●' : '○'}</span>${opt.label}${intensityLabel}`;
+    btn.onclick = () => selectAnswer(q.axis, opt.value, opt.weight);
+    if (opt.weight === 2) {
+      btn.style.borderWidth = '3px';
+      btn.style.fontWeight = '600';
+    }
+    optsEl.appendChild(btn);
+  });
+  // 返回按钮：第一题隐藏，其余显示
+  const backBtn = document.getElementById('back-btn');
+  const progressText = document.getElementById('progress-text');
+  if (currentQ === 0) {
+    backBtn.classList.remove('visible');
+  } else {
+    backBtn.classList.add('visible');
+  }
+  progressText.textContent = `${currentQ} / ${questions.length} 已答`;
+}
+
+function selectAnswer(axis, value, weight) {
+  if (!answers[axis]) answers[axis] = [];
+  // 按权重多次推入，使强偏好比弱偏好影响力更大
+  for (let i = 0; i < weight; i++) {
+    answers[axis].push(value);
+  }
+  // 记录答题历史，用于回退
+  answerHistory.push({ axis, value, weight });
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showResult();
+  } else {
+    renderChecklist();
+    renderQuestion();
+  }
+}
+
+function goBack() {
+  if (currentQ <= 0 || answerHistory.length === 0) return;
+  // 弹出最后一题的答题记录
+  const last = answerHistory.pop();
+  // 从 answers 中移除对应数量的值
+  const arr = answers[last.axis];
+  if (arr) {
+    for (let i = 0; i < last.weight; i++) {
+      // 从尾部移除（后进先出）
+      const idx = arr.lastIndexOf(last.value);
+      if (idx !== -1) arr.splice(idx, 1);
+    }
+  }
+  currentQ--;
+  renderChecklist();
+  renderQuestion();
+}
+
+function tally(axis, a, b) {
+  const list = answers[axis] || [];
+  const countA = list.filter(v => v === a).length;
+  const countB = list.filter(v => v === b).length;
+  return countA >= countB ? a : b;
+}
+
+function showResult() {
+  try {
+    const type =
+      tally('EI', 'E', 'I') +
+      tally('SN', 'S', 'N') +
+      tally('TF', 'T', 'F') +
+      tally('JP', 'J', 'P') +
+      '-' +
+      tally('AX', 'A', 'X');
+
+    let p = personas[type];
+    if (!p) {
+      console.warn('Unknown type:', type, '— falling back to first persona');
+      p = personas[Object.keys(personas)[0]];
+    }
+
+    // 渲染人格图片
+    const imgEl = document.getElementById('res-img');
+    const imgFile = personaImages[p.code];
+    imgEl.src = imgFile ? IMG_DIR + imgFile : '';
+    imgEl.alt = p.name;
+    imgEl.onerror = function() {
+      // 图片加载失败时显示 emoji 兜底
+      this.style.display = 'none';
+      const fallback = document.getElementById('res-img-fallback');
+      if (fallback) {
+        fallback.style.display = 'flex';
+        fallback.textContent = p.emoji;
+      }
+    };
+
+    document.getElementById('res-code').textContent = p.code;
+    document.getElementById('res-name').textContent = p.name;
+    document.getElementById('res-mbti').textContent = `人格编码 · ${p.mbti}（基于五大维度）`;
+    document.getElementById('res-desc').textContent = p.desc;
+    document.getElementById('res-quote').innerHTML = `<b>崩溃语录：</b>${p.quote}`;
+
+    const traitsEl = document.getElementById('res-traits');
+    traitsEl.innerHTML = '';
+    p.traits.forEach(t => {
+      const chip = document.createElement('span');
+      chip.className = 'trait-chip';
+      chip.textContent = t;
+      traitsEl.appendChild(chip);
+    });
+
+    // 渲染五大维度占比条（双边对比）
+    const dimsEl = document.getElementById('dims-section');
+    const scores = getDimensionScores();
+    const barColors = ['bar-ei', 'bar-sn', 'bar-tf', 'bar-jp', 'bar-ax'];
+    dimsEl.innerHTML = '<div class="dims-title">— 五大维度分析 —</div>';
+    scores.forEach((s, i) => {
+      const row = document.createElement('div');
+      row.className = 'dim-row';
+      row.innerHTML = `
+        <div class="dim-label-l">${s.leftLabel}</div>
+        <div class="dim-pct-l">${s.leftPct}%</div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar-fill ${barColors[i]}" style="width:${s.leftPct}%;"></div>
+        </div>
+        <div class="dim-pct-r">${s.rightPct}%</div>
+        <div class="dim-label-r">${s.rightLabel}</div>
+      `;
+      dimsEl.appendChild(row);
+    });
+
+    showScreen('screen-result');
+  } catch (e) {
+    console.error('showResult error:', e);
+    alert('出错了！请刷新页面重试。错误：' + e.message);
+  }
+}
+
+function restartQuiz() {
+  // 清理图库状态
+  const grid = document.getElementById('gallery-grid');
+  grid.innerHTML = '';
+  grid.classList.remove('open');
+  document.getElementById('gallery-btn').textContent = '👀 查看全部32种期末人格图鉴';
+  showScreen('screen-intro');
+}
+
+function toggleGallery() {
+  const grid = document.getElementById('gallery-grid');
+  const btn = document.getElementById('gallery-btn');
+  const isOpen = grid.classList.toggle('open');
+  btn.textContent = isOpen ? '🙈 收起图鉴' : '👀 查看全部32种期末人格图鉴';
+  if (isOpen && grid.children.length === 0) {
+    renderGallery();
+  }
+}
+
+function renderGallery() {
+  const grid = document.getElementById('gallery-grid');
+  grid.innerHTML = '';
+  const entries = Object.entries(personas);
+  if (entries.length === 0) return;
+  let currentType = '';
+  try {
+    currentType =
+      tally('EI', 'E', 'I') +
+      tally('SN', 'S', 'N') +
+      tally('TF', 'T', 'F') +
+      tally('JP', 'J', 'P') +
+      '-' +
+      tally('AX', 'A', 'X');
+  } catch(e) { /* 容错 */ }
+
+  entries.forEach(([type, p]) => {
+    const cell = document.createElement('div');
+    cell.className = 'gallery-cell' + (type === currentType ? ' current' : '');
+    const imgFile = personaImages[p.code];
+    const imgSrc = imgFile ? IMG_DIR + imgFile : '';
+    cell.innerHTML = `
+      <img class="gallery-img" src="${imgSrc}" alt="${p.name}" loading="lazy"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+           style="display:block;" />
+      <div class="gallery-sticker" style="display:none;background:var(${p.color});">${p.emoji}</div>
+      <div class="g-name">${p.name}</div>
+      <div class="g-code">${p.code}</div>
+    `;
+    grid.appendChild(cell);
+  });
+}
+</script>
+</body>
+</html>
